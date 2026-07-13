@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DLR - Base de Datos de Partida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .jtk-overlay {
+        background-color: white;
+        padding: 2px 6px;
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        color: #1e293b;
+        z-index: 20;
+      }
+      .canvas-container {
+        height: 220px;
+        position: relative;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 font-sans text-slate-800 p-10">
+    <div class="max-w-7xl mx-auto">
+      <header class="mb-12 border-b border-slate-200 pb-6">
+        <h1
+          class="text-3xl font-extrabold text-indigo-900 tracking-tight uppercase"
+        >
+          Diagrama Lógico Relacional (DLR)
+        </h1>
+        <p class="text-slate-500 mt-2 italic">
+          Descripción del conjunto de datos de partida y sus relaciones.
+        </p>
+      </header>
+
+      <!-- SECCIÓN 1: Diagrama DLR Horizontal con jsPlumb (Bezier) -->
+      <div
+        id="diagram-container"
+        class="relative h-[420px] w-full border border-dashed border-slate-300 rounded-3xl bg-white/40 mb-10 overflow-hidden shadow-inner"
+      >
+        <!-- Tabla 1. Pacientes -->
+        <div
+          id="table-pacientes"
+          class="absolute top-10 left-10 w-60 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden z-10"
+        >
+          <div
+            class="bg-indigo-600 px-4 py-2 text-white font-bold text-sm flex items-center"
+          >
+            <i class="fas fa-users mr-2"></i> Pacientes
+          </div>
+          <div class="p-4 space-y-2 text-xs">
+            <div
+              class="flex justify-between font-bold text-indigo-700 border-b pb-1"
+            >
+              <span>dni (PK)</span>
+              <span class="text-slate-400">Entero (ID)</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>nombre</span> <span class="text-slate-400">Texto</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>apellido</span> <span class="text-slate-400">Texto</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>fecha_nacimiento</span>
+              <span class="text-slate-400">Fecha</span>
+            </div>
+            <div class="flex justify-between italic">
+              <span>sexo</span> <span class="text-slate-400">Texto</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla 2. Turnos -->
+        <div
+          id="table-turnos"
+          class="absolute top-10 left-[450px] w-64 bg-white rounded-xl shadow-lg border border-indigo-400 ring-4 ring-indigo-50 overflow-hidden z-10"
+        >
+          <div
+            class="bg-indigo-800 px-4 py-2 text-white font-bold text-sm flex items-center"
+          >
+            <i class="fas fa-calendar-check mr-2"></i> Turnos
+          </div>
+          <div class="p-4 space-y-2 text-xs">
+            <div
+              class="flex justify-between font-bold text-indigo-700 border-b pb-1"
+            >
+              <span>id_turno (PK)</span>
+              <span class="text-slate-400">Entero (ID)</span>
+            </div>
+            <div
+              class="flex justify-between text-orange-600 border-b pb-1 font-bold"
+            >
+              <span>dni (FK)</span>
+              <span class="text-slate-400 italic">Entero</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>fecha</span> <span class="text-slate-400">Fecha</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>hora</span> <span class="text-slate-400">Hora</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>tratamiento</span> <span class="text-slate-400">Texto</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>profesional</span> <span class="text-slate-400">Texto</span>
+            </div>
+            <div class="flex justify-between italic">
+              <span>estado</span> <span class="text-slate-400">Texto</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla 3. Motivos de cancelación o ausencia -->
+        <div
+          id="table-motivo"
+          class="absolute top-[220px] left-[900px] w-60 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden z-10"
+        >
+          <div
+            class="bg-rose-600 px-4 py-2 text-white font-bold text-sm flex items-center"
+          >
+            <i class="fas fa-exclamation-circle mr-2"></i> Motivo inasistencia
+          </div>
+          <div class="p-4 space-y-2 text-xs">
+            <div
+              class="flex justify-between font-bold text-rose-700 border-b pb-1"
+            >
+              <span>id_turno (PK/FK)</span>
+              <span class="text-slate-400">Entero (ID)</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>motivo</span> <span class="text-slate-400">Texto</span>
+            </div>
+            <div class="flex justify-between italic">
+              <span>comentario</span> <span class="text-slate-400">Texto</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla 4. Encuesta de satisfacción -->
+        <div
+          id="table-encuesta"
+          class="absolute top-10 left-[900px] w-60 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden z-10"
+        >
+          <div
+            class="bg-emerald-600 px-4 py-2 text-white font-bold text-sm flex items-center"
+          >
+            <i class="fas fa-star mr-2"></i> Encuesta satisfacción
+          </div>
+          <div class="p-4 space-y-2 text-xs">
+            <div
+              class="flex justify-between font-bold text-emerald-700 border-b pb-1"
+            >
+              <span>id_turno (PK/FK)</span>
+              <span class="text-slate-400">Entero (ID)</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>satisfacción</span>
+              <span class="text-slate-400">Entero</span>
+            </div>
+            <div class="flex justify-between border-b pb-1 italic">
+              <span>volvería</span> <span class="text-slate-400">Boolean</span>
+            </div>
+            <div class="flex justify-between italic">
+              <span>recomendaría</span>
+              <span class="text-slate-400">Boolean</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: Panel de análisis de reglas de negocio -->
+      <div class="bg-white p-10 rounded-3xl shadow-xl border border-slate-100">
+        <!-- Cardinalidad y Reglas de Negocio (Literal de EsquemaRelacionalDatos / Parte1) -->
+        <div>
+          <h2 class="text-2xl font-bold text-indigo-900 mb-6 flex items-center">
+            <i class="fas fa-project-diagram mr-3 text-indigo-500"></i>
+            Cardinalidad y Reglas de Negocio
+          </h2>
+          <div class="space-y-6 text-slate-600 pl-4 md:pl-6">
+            <div class="flex gap-4">
+              <div
+                class="h-10 w-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold shrink-0"
+              >
+                1:N
+              </div>
+              <p>
+                <strong>Pacientes a Turnos:</strong> Un paciente puede tener
+                <b>muchos</b> turnos.
+              </p>
+            </div>
+            <div class="flex gap-4">
+              <div
+                class="h-10 w-10 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center font-bold shrink-0"
+              >
+                1:1
+              </div>
+              <p>
+                <strong>Turnos a Motivo:</strong> Un turno no concretado puede
+                tener <b>un</b> motivo de inasistencia.
+              </p>
+            </div>
+            <div class="flex gap-4">
+              <div
+                class="h-10 w-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0"
+              >
+                1:1
+              </div>
+              <p>
+                <strong>Turnos a Encuesta:</strong> Un turno concretado puede
+                tener <b>una</b> encuesta de satisfacción.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Configuración jsPlumb (Bezier Curvas Centradas)
+      jsPlumb.ready(function () {
+        var instance = jsPlumb.getInstance({
+          Connector: ["Bezier", { curviness: 60 }],
+          Endpoint: ["Dot", { radius: 3 }],
+          PaintStyle: { stroke: "#94a3b8", strokeWidth: 2 },
+          HoverPaintStyle: { stroke: "#6366f1", strokeWidth: 3 },
+          Container: "diagram-container",
+        });
+
+        // Conexiones horizontales
+        instance.connect({
+          source: "table-pacientes",
+          target: "table-turnos",
+          anchors: ["Right", "Left"],
+          overlays: [
+            ["Label", { label: "1", location: 0.1 }],
+            ["Label", { label: "0..N", location: 0.9 }],
+          ],
+        });
+
+        instance.connect({
+          source: "table-turnos",
+          target: "table-motivo",
+          anchors: ["Right", "Left"],
+          overlays: [
+            ["Label", { label: "1", location: 0.1 }],
+            ["Label", { label: "0..1", location: 0.9 }],
+          ],
+        });
+
+        instance.connect({
+          source: "table-turnos",
+          target: "table-encuesta",
+          anchors: ["Right", "Left"],
+          overlays: [
+            ["Label", { label: "1", location: 0.2 }],
+            ["Label", { label: "0..1", location: 0.8 }],
+          ],
+        });
+
+        instance.draggable(document.querySelectorAll(".absolute"));
+      });
+    </script>
+  </body>
+</html>
