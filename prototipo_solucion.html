@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prototipo: Sistema de Confirmación Inteligente</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- jsPlumb -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsplumb/2.15.6/js/jsplumb.min.js"></script>
+    <style>
+      .flow-node {
+        z-index: 10;
+        transition: all 0.3s ease;
+      }
+      .flow-node:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      }
+      #canvas {
+        min-height: 600px;
+        position: relative;
+      }
+      .jtk-connector {
+        z-index: 1;
+      }
+      .jtk-endpoint {
+        z-index: 2;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 font-sans text-slate-800">
+    <div class="container mx-auto py-10 px-4">
+      <!-- Header basado en lineamientos de comunicación del Tema 3 -->
+      <header class="mb-12 text-center">
+        <h1 class="text-3xl font-bold text-slate-900 mb-2">
+          Prototipo de Solución Inteligente: Centro Estético PFD
+        </h1>
+        <p class="text-slate-600 max-w-2xl mx-auto">
+          Visualización del flujo de trabajo automatizado para la reducción de
+          inasistencias mediante IA y Automatización No-Code.
+        </p>
+      </header>
+
+      <div
+        id="canvas"
+        class="grid grid-cols-1 md:grid-cols-4 gap-6 items-start relative"
+      >
+        <!-- SECCIÓN: ENTRADA (SITUACIÓN) -->
+        <div>
+          <div class="text-center mb-4">
+            <span
+              class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+              >Entrada (Input)</span
+            >
+          </div>
+
+          <div
+            id="node-db"
+            class="flow-node bg-white p-6 rounded-xl border border-slate-200 shadow-sm"
+          >
+            <div class="flex items-center space-x-4 mb-3">
+              <div class="bg-blue-500 p-3 rounded-lg text-white">
+                <i class="fas fa-database fa-lg"></i>
+              </div>
+              <h3 class="font-bold text-lg text-slate-800">Base de Datos</h3>
+            </div>
+            <p class="text-sm text-slate-500">
+              Gestión de turnos (Pacientes, fecha/hora, tratamientos).
+            </p>
+            <ul class="mt-3 text-xs text-slate-400 italic">
+              <li>Filtro: Turnos próximos del día siguiente</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- SECCIÓN: MAKE (AUTOMATIZACIÓN) -->
+        <div>
+          <div class="text-center mb-4">
+            <span
+              class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+              >Transformación (Acción)</span
+            >
+          </div>
+
+          <div
+            id="node-make"
+            class="flow-node bg-white p-6 rounded-xl border border-slate-200 shadow-sm"
+          >
+            <div class="flex items-center space-x-4 mb-3">
+              <div class="bg-purple-500 p-3 rounded-lg text-white">
+                <i class="fas fa-gears fa-lg"></i>
+              </div>
+              <h3 class="font-bold text-lg text-slate-800">
+                Make (Automatización)
+              </h3>
+            </div>
+            <ol
+              class="mt-3 text-sm text-slate-500 space-y-4 list-decimal list-inside"
+            >
+              <li>
+                <span
+                  >Genera mensaje de recordatorio y solicitud de
+                  confirmación.</span
+                >
+                <div class="mt-3 ml-6">
+                  <img
+                    src="POWERPNT_CArjA35W5m.png"
+                    alt="Ejemplo de mensaje de recordatorio"
+                    class="w-full rounded-lg border border-slate-200"
+                  />
+                </div>
+              </li>
+              <li>Envía recordatorio por WhatsApp.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- SECCIÓN: IA (NLP) -->
+        <div>
+          <div class="text-center mb-4">
+            <span
+              class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+              >Decisión</span
+            >
+          </div>
+
+          <div
+            id="node-ia"
+            class="flow-node bg-white p-6 rounded-xl border border-slate-200 shadow-sm"
+          >
+            <div class="flex items-center space-x-4 mb-3">
+              <div class="bg-indigo-600 p-3 rounded-lg text-white">
+                <i class="fas fa-robot fa-lg"></i>
+              </div>
+              <h3 class="font-bold text-lg text-slate-800">IA (NLP)</h3>
+            </div>
+            <div class="text-sm text-slate-500">
+              <p class="mb-2">
+                Analiza el mensaje del paciente en lenguaje natural y clasifica
+                la intención de la respuesta en:
+              </p>
+              <ul class="space-y-1 list-disc list-inside ml-4">
+                <li>Confirmación de asistencia.</li>
+                <li>Cancelación del turno.</li>
+                <li>Solicitud de reprogramación.</li>
+                <li>Consulta.</li>
+                <li>Sin respuesta.</li>
+                <li>
+                  Ninguno de los anteriores (incapacidad de clasificación del
+                  mensaje en las categorías previas).
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN: RESULTADO (SALIDA) -->
+        <div class="space-y-4">
+          <div class="text-center mb-4">
+            <span
+              class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider"
+              >Resultado (Output)</span
+            >
+          </div>
+
+          <div
+            id="node-confirm"
+            class="flow-node bg-emerald-50 p-5 rounded-xl border border-emerald-100 shadow-sm"
+          >
+            <div class="flex items-center space-x-4 mb-2">
+              <div class="bg-emerald-500 p-2 rounded-md text-white">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <h3 class="font-bold text-emerald-900">
+                Confirmación de Asistencia
+              </h3>
+            </div>
+            <p class="text-xs text-emerald-700">
+              Actualización automática del estado del turno en la BBDD.
+            </p>
+          </div>
+
+          <div
+            id="node-cancel"
+            class="flow-node bg-rose-50 p-5 rounded-xl border border-rose-100 shadow-sm text-rose-900"
+          >
+            <div class="flex items-center space-x-4 mb-2">
+              <div class="bg-rose-500 p-2 rounded-md text-white">
+                <i class="fas fa-calendar-xmark"></i>
+              </div>
+              <h3 class="font-bold">Cancelación del turno</h3>
+            </div>
+            <p class="text-xs text-rose-700">
+              Cancelación automática y liberación del espacio en la agenda del
+              centro estético.
+            </p>
+          </div>
+
+          <div
+            id="node-admin"
+            class="flow-node bg-amber-50 p-5 rounded-xl border border-amber-100 shadow-sm text-amber-900"
+          >
+            <div class="flex items-center space-x-4 mb-2">
+              <div class="bg-amber-500 p-2 rounded-md text-white">
+                <i class="fas fa-user-tie"></i>
+              </div>
+              <h3 class="font-bold">Intervención Humana</h3>
+            </div>
+            <div class="text-xs text-amber-700">
+              <p class="mb-2">
+                Envío de alerta o notificación al personal administrativo para
+                intervención humana ante:
+              </p>
+              <ul class="space-y-1 list-disc list-inside ml-4">
+                <li>Consultas.</li>
+                <li>Reprogramación de turnos.</li>
+                <li>
+                  Incapacidad de clasificación del mensaje del usuario por parte
+                  de la IA.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      jsPlumb.ready(function () {
+        var instance = jsPlumb.getInstance({
+          Connector: [
+            "Flowchart",
+            { stub: 30, gap: 10, cornerRadius: 5, alwaysRespectStubs: true },
+          ],
+          PaintStyle: { stroke: "#94a3b8", strokeWidth: 2 },
+          EndpointStyle: { fill: "transparent" },
+          Anchor: "AutoDefault",
+        });
+
+        // Configurar puntos de conexión con flechas
+        var endpointOptions = {
+          endpoint: "Dot",
+          paintStyle: { fill: "#94a3b8" },
+          isSource: true,
+          isTarget: true,
+          maxConnections: -1,
+        };
+
+        jsPlumb.addEndpoint("node-db", { anchor: "Right" }, endpointOptions);
+        jsPlumb.addEndpoint("node-db", { anchor: "Left" }, endpointOptions);
+        jsPlumb.addEndpoint("node-make", { anchor: "Right" }, endpointOptions);
+        jsPlumb.addEndpoint("node-make", { anchor: "Left" }, endpointOptions);
+        jsPlumb.addEndpoint("node-ia", { anchor: "Right" }, endpointOptions);
+        jsPlumb.addEndpoint("node-ia", { anchor: "Left" }, endpointOptions);
+        jsPlumb.addEndpoint("node-confirm", { anchor: "Left" }, endpointOptions);
+        jsPlumb.addEndpoint("node-cancel", { anchor: "Left" }, endpointOptions);
+        jsPlumb.addEndpoint("node-admin", { anchor: "Left" }, endpointOptions);
+
+        // Conexiones Entrada -> Transformación -> Procesamiento
+        instance.connect({
+          source: "node-db",
+          target: "node-make",
+          anchors: ["Right", "Left"],
+          overlays: [["Arrow", { location: 1, width: 20, length: 20 }]],
+        });
+
+        instance.connect({
+          source: "node-make",
+          target: "node-ia",
+          anchors: ["Right", "Left"],
+          overlays: [["Arrow", { location: 1, width: 20, length: 20 }]],
+        });
+
+        // Conexiones Procesamiento -> Resultados
+        instance.connect({
+          source: "node-ia",
+          target: "node-confirm",
+          anchors: ["Right", "Left"],
+          overlays: [
+            ["Arrow", { location: 1, width: 20, length: 20 }],
+            [
+              "Label",
+              {
+                label: "Confirmación",
+                location: 0.5,
+                cssClass: "bg-white px-2 text-[10px] text-slate-400",
+              },
+            ],
+          ],
+        });
+
+        instance.connect({
+          source: "node-ia",
+          target: "node-cancel",
+          anchors: ["Right", "Left"],
+          overlays: [
+            ["Arrow", { location: 1, width: 20, length: 20 }],
+            [
+              "Label",
+              {
+                label: "Cancelación",
+                location: 0.5,
+                cssClass: "bg-white px-2 text-[10px] text-slate-400",
+              },
+            ],
+          ],
+        });
+
+        instance.connect({
+          source: "node-ia",
+          target: "node-admin",
+          anchors: ["Right", "Left"],
+          overlays: [
+            ["Arrow", { location: 1, width: 20, length: 20 }],
+            [
+              "Label",
+              {
+                label: "Otros/Duda",
+                location: 0.5,
+                cssClass: "bg-white px-2 text-[10px] text-slate-400",
+              },
+            ],
+          ],
+        });
+
+        window.addEventListener("resize", function () {
+          instance.repaintEverything();
+        });
+      });
+    </script>
+  </body>
+</html>
