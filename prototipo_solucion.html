@@ -150,7 +150,6 @@
                 <li>Cancelación del turno.</li>
                 <li>Solicitud de reprogramación.</li>
                 <li>Consulta.</li>
-                <li>Sin respuesta.</li>
                 <li>
                   Ninguno de los anteriores (incapacidad de clasificación del
                   mensaje en las categorías previas).
@@ -197,8 +196,8 @@
               <h3 class="font-bold">Cancelación del turno</h3>
             </div>
             <p class="text-xs text-rose-700">
-              Cancelación automática y liberación del espacio en la agenda del
-              centro estético.
+              Cancelación y liberación del espacio en la agenda del centro
+              estético.
             </p>
           </div>
 
@@ -258,7 +257,11 @@
         jsPlumb.addEndpoint("node-make", { anchor: "Left" }, endpointOptions);
         jsPlumb.addEndpoint("node-ia", { anchor: "Right" }, endpointOptions);
         jsPlumb.addEndpoint("node-ia", { anchor: "Left" }, endpointOptions);
-        jsPlumb.addEndpoint("node-confirm", { anchor: "Left" }, endpointOptions);
+        jsPlumb.addEndpoint(
+          "node-confirm",
+          { anchor: "Left" },
+          endpointOptions,
+        );
         jsPlumb.addEndpoint("node-cancel", { anchor: "Left" }, endpointOptions);
         jsPlumb.addEndpoint("node-admin", { anchor: "Left" }, endpointOptions);
 
